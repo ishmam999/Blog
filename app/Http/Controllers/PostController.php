@@ -15,9 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        //create a variable and store all the blog posts in it from the database
-        $posts = Post::all();
-        //return a view and pass in the above variable
+        $posts = Post::orderBy('id', 'desc')->paginate(5);
         return view('posts.index')->withPosts($posts);
     }
 
@@ -53,7 +51,7 @@ class PostController extends Controller
 
         $post->save();
 
-        Session::flash('success', 'The blog post was succesfully saved!');
+        Session::flash('success', 'The blog post was successfully saved!');
 
         //redirect to another page
         return redirect()->route('posts.show', $post->id);
@@ -111,7 +109,7 @@ class PostController extends Controller
         $post->save();
 
         //set flash data with success message
-        Session::flash('success', 'This post was succesfully updated.');
+        Session::flash('success', 'This post was successfully updated.');
 
         //redirect with flash data to the view
         return redirect()->route('posts.show', $post->id);
@@ -125,6 +123,11 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::find($id);
+
+        $post->delete();
+
+        Session::flash('success', 'The post was successfully deleted');
+        return redirect()->route('posts.index');
     }
 }
